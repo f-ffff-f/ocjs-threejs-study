@@ -12,6 +12,7 @@ import {
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import openCascadeHelper from './common/openCascadeHelper'
 
+// 1.
 const setupThreeJSViewport = () => {
   var scene = new Scene()
   var camera = new PerspectiveCamera(
@@ -49,8 +50,10 @@ const setupThreeJSViewport = () => {
 }
 export { setupThreeJSViewport }
 
+// 4.
 const addShapeToScene = async (openCascade, shape, scene) => {
   openCascadeHelper.setOpenCascade(openCascade)
+
   const facelist = await openCascadeHelper.tessellate(shape)
   const [locVertexcoord, locNormalcoord, locTriIndices] =
     await openCascadeHelper.joinPrimitives(facelist)
@@ -78,6 +81,7 @@ const addShapeToScene = async (openCascade, shape, scene) => {
 }
 export { addShapeToScene }
 
+// 3.
 const makePolygon = openCascade => {
   const builder = new openCascade.BRep_Builder()
   const aComp = new openCascade.TopoDS_Compound()

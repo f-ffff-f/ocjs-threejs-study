@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function () {
 function readFileAsync(file) {
   return new Promise((resolve, reject) => {
     const fileReader = new FileReader()
-    fileReader.readAsArrayBuffer(file) // ArrayBuffer로 변환 후 로드
+    fileReader.readAsArrayBuffer(file) // ArrayBuffer로 읽는다
     fileReader.onload = event => resolve(event.target.result) // ArrayBuffer 로드되면 resolve
     fileReader.onerror = error => reject(error)
   })
@@ -73,7 +73,6 @@ async function handleSTEPFile(file) {
 
   try {
     // 파일 내용을 ArrayBuffer로 읽기
-    const fileContent = await readFileAsync(file)
 
     // 가상 파일 시스템에 파일 생성
     const fileType = file.name.toLowerCase().endsWith('.stp') ? 'stp' : 'step'
@@ -85,9 +84,11 @@ async function handleSTEPFile(file) {
     } catch (e) {
       // 파일이 존재하지 않으면 오류 무시
     }
+    const fileArrayBuffer = await readFileAsync(file)
+    const fileUint8Array = new Uint8Array(fileArrayBuffer)
 
-    // 새 파일 생성
-    oc.FS.createDataFile('/', fileName, new Uint8Array(fileContent), true, true)
+    // wasm에 자바스크립트가 저장한 파일을 추가하는 브릿지
+    oc.FS.createDataFile('/', fileName, fileUint8Array, true, true)
     console.log(`파일 '${fileName}'을 가상 파일 시스템에 생성했습니다.`)
 
     // STEP 리더 생성

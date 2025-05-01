@@ -18,15 +18,11 @@ jobs:
 
       - run: |
           pnpm --filter ocjs-create-react-app-typescript build
-          pnpm --filter opencascade.js-examples build
-          pnpm --filter read-step-calc-aabb build
 
       - uses: actions/upload-pages-artifact@v3
         with:
           path: |
             packages/ocjs-create-react-app-typescript/build
-            packages/opencascade.js-examples/dist
-            packages/read-step-calc-aabb/dist
 
   deploy:
     needs: build

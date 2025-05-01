@@ -15,7 +15,7 @@
     },
     "scripts": {
         "start": "webpack serve --mode development --open",
-        "build": "rm dist -fr && webpack --mode=production",
+        "build": "webpack --mode=production",
         "deploy": "gh-pages -d dist"
     },
     "dependencies": {

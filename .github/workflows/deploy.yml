@@ -1,49 +1,38 @@
+# .github/workflows/deploy.yml
 name: Deploy GitHub Pages
-
 on:
   push:
-    branches: [main] # 메인에 머지될 때마다 재배포
+    branches: [main]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
-      # PNPM 세팅
       - uses: pnpm/action-setup@v2
         with:
           version: 8
 
-      - name: Install deps
-        run: pnpm install --frozen-lockfile
+      - run: pnpm install --frozen-lockfile
 
-      # ──────────────── 개별 패키지 빌드 ────────────────
-      - name: Build packages
-        run: |
+      - run: |
           pnpm --filter ocjs-create-react-app-typescript build
           pnpm --filter opencascade.js-examples build
           pnpm --filter read-step-calc-aabb build
 
-      # ──────────────── 산출물 모으기 ────────────────
-      - name: Collect artifacts
-        run: |
-          mkdir public
-          cp -r packages/ocjs-create-react-app-typescript/build        public/react
-          cp -r packages/opencascade.js-examples/dist                  public/examples
-          cp -r packages/read-step-calc-aabb/dist                      public/aabb
-
-      # Pages artifact 업로드
-      - uses: actions/upload-pages-artifact@v2
+      - uses: actions/upload-pages-artifact@v3
         with:
-          path: public
+          path: |
+            packages/ocjs-create-react-app-typescript/build
+            packages/opencascade.js-examples/dist
+            packages/read-step-calc-aabb/dist
 
   deploy:
     needs: build
+    runs-on: ubuntu-latest
     permissions:
       pages: write
       id-token: write
-    runs-on: ubuntu-latest
     steps:
-      - uses: actions/deploy-pages@v2
+      - uses: actions/deploy-pages@v4

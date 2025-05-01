@@ -16,13 +16,11 @@ jobs:
 
       - run: pnpm install --no-frozen-lockfile
 
-      - run: |
-          pnpm --filter ocjs-create-react-app-typescript build
+      - run: pnpm --filter read-step-calc-aabb build
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: |
-            packages/ocjs-create-react-app-typescript/build
+          path: packages/read-step-calc-aabb/dist
 
   deploy:
     needs: build

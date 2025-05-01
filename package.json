@@ -1,0 +1,14 @@
+{
+    "name": "cae-study",
+    "version": "1.0.0",
+    "private": true,
+    "description": "A monorepo for learning and example projects",
+    "scripts": {
+        "build": "pnpm -r build",
+        "test": "pnpm -r test",
+        "start:react-app": "pnpm --filter ocjs-create-react-app start",
+        "ocjs-node:start": ". \"$NVM_DIR/nvm.sh\" && cd packages/ocjs-node && nvm use && pnpm start",
+        "start:examples": "pnpm --filter opencascade.js-examples start"
+    },
+    "devDependencies": {}
+}

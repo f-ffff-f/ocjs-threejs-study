@@ -47,8 +47,8 @@ document.addEventListener('DOMContentLoaded', function () {
   })
 })
 
-// 파일을 비동기적으로 읽는 함수
-function readFileAsync(file) {
+// 파일을 ArrayBuffer로 읽는 함수
+function readFileArrayBuffer(file) {
   return new Promise((resolve, reject) => {
     const fileReader = new FileReader()
     fileReader.readAsArrayBuffer(file) // ArrayBuffer로 읽는다
@@ -57,7 +57,7 @@ function readFileAsync(file) {
   })
 }
 
-// STEP 파일 처리 함수
+// STEP 파일은 B-rep 데이터를 저장하는 표준 형식.
 async function handleSTEPFile(file) {
   showTemplate('LOADING')
 
@@ -72,9 +72,7 @@ async function handleSTEPFile(file) {
   }
 
   try {
-    // 파일 내용을 ArrayBuffer로 읽기
-
-    // 가상 파일 시스템에 파일 생성
+    // wasm 모듈 파일 시스템에 생성할 파일 이름
     const fileType = file.name.toLowerCase().endsWith('.stp') ? 'stp' : 'step'
     const fileName = `file.${fileType}`
 
@@ -84,10 +82,12 @@ async function handleSTEPFile(file) {
     } catch (e) {
       // 파일이 존재하지 않으면 오류 무시
     }
-    const fileArrayBuffer = await readFileAsync(file)
+
+    // 자바스크립트가 파일을 변환한다
+    const fileArrayBuffer = await readFileArrayBuffer(file)
     const fileUint8Array = new Uint8Array(fileArrayBuffer)
 
-    // wasm에 자바스크립트가 저장한 파일을 추가하는 브릿지
+    // 자바스크립트가 wasm 모듈 파일시스템에 파일을 추가한다
     oc.FS.createDataFile('/', fileName, fileUint8Array, true, true)
     console.log(`파일 '${fileName}'을 가상 파일 시스템에 생성했습니다.`)
 
@@ -113,7 +113,7 @@ async function handleSTEPFile(file) {
         console.log('형상 가져오기 성공')
 
         // AABB 계산
-        const aabb = calculateAABBFromBRep(shape)
+        const aabb = calculateAABBFromShape(shape)
 
         // 결과 계산
         const result = {
@@ -138,8 +138,8 @@ async function handleSTEPFile(file) {
   }
 }
 
-// B-rep 모델에서 AABB 계산
-function calculateAABBFromBRep(shape) {
+// 형상에서 AABB 계산
+function calculateAABBFromShape(shape) {
   // Bnd_Box 객체 생성
   const boundingBox = new oc.Bnd_Box_1()
 

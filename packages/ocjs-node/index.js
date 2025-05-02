@@ -52,6 +52,7 @@ async function run() {
   fuse.Build(new oc.Message_ProgressRange_1())
   const result = fuse.Shape().Moved(makeRotation((-30 * Math.PI) / 180), false)
 
+  console.log(result)
   console.log('all done')
 }
 

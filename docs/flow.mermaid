@@ -1,0 +1,90 @@
+---
+id: 136873ef-d8ac-4e4d-b140-ee1ee61414d5
+---
+graph TDㄱ
+%% [MermaidChart: 136873ef-d8ac-4e4d-b140-ee1ee61414d5]
+    %% Define Actors/Swimlanes
+    subgraph User
+        A[시작: 웹 앱 실행] --> B{CAD 파일 선택 (.step 등)}
+        B --> C[업로드 버튼 클릭]
+        I[지오메트리 프리뷰 확인] --> J{메싱 옵션 설정 (선택)}
+        J --> K[메시 생성 버튼 클릭]
+        P[메시 프리뷰 확인] --> Q{해석 설정 입력 (경계조건, 하중, 재료 등)}
+        Q --> R[해석 실행 버튼 클릭]
+        W[해석 결과 확인] --> X[종료]
+    end
+
+    subgraph Frontend [Frontend (Browser - React/Next.js)]
+        UploadUI[파일 업로드 UI 표시] --> D[백엔드로 파일 전송 요청]
+        D -- CAD File --> E[상태 표시: '업로드 중...']
+        H[백엔드로부터 glTF 데이터 수신] --> RenderPreview[프리뷰 렌더링 (WebGL)]
+        RenderPreview -- 화면 표시 --> I %% === 프론트엔드 Endpoint 1: 형상 렌더링 ===
+        MeshUI[메싱 설정 UI 표시] --> L[백엔드로 메시 생성 요청]
+        L -- Mesh Params, Geo ID --> M[상태 표시: '메싱 진행 중...']
+        O[백엔드로부터 메시 시각화 데이터 수신] --> RenderMesh[메시 프리뷰 렌더링 (WebGL)]
+        RenderMesh -- 화면 표시 --> P
+        SetupUI[해석 설정 UI 표시] --> S[백엔드로 해석 설정 데이터 전송]
+        S -- Setup Data, Mesh ID --> T[상태 표시: '해석 진행 중...']
+        V[백엔드로부터 해석 결과 데이터 수신] --> RenderResults[결과 렌더링 (변형, 컨투어 등) (WebGL)]
+        RenderResults -- 화면 표시 --> W %% === 프론트엔드 Endpoint 2: 결과 렌더링 ===
+    end
+
+    subgraph Backend [Backend (Server)]
+        %% Internal Components (as nodes for clarity)
+        DS[(데이터 저장소: DB, 파일 스토리지)]
+        GK[(지오메트리 커널: Open CASCADE 등)]
+        ME[(메싱 엔진)]
+        FS[(FEM Solver)]
+
+        F[파일 수신] --> G[CAD 파일 파싱]
+        G -- Call --> GK
+        GK --> StoreGeo[파싱된 지오메트리 저장]
+        StoreGeo --> DS
+        StoreGeo --> ConvertGeo[웹 포맷 변환 (glTF)]
+        ConvertGeo --> H
+        N[메시 생성 요청 수신] --> GenMesh[메시 생성]
+        GenMesh -- Call --> ME
+        GenMesh -- Use --> StoreGeo %% Reads Geometry from Storage
+        ME --> StoreMesh[생성된 메시 저장]
+        StoreMesh --> DS
+        StoreMesh --> ConvertMesh[메시 시각화 포맷 변환]
+        ConvertMesh --> O
+        U[해석 설정 데이터 수신] --> PrepareSolve[Solver 입력 데이터 준비]
+        PrepareSolve -- Use --> StoreMesh %% Reads Mesh from Storage
+        PrepareSolve --> RunSolve[FEM 해석 실행] %% === 백엔드 Endpoint: Solving ===
+        RunSolve -- Call --> FS
+        FS --> ProcessResults[Solver 결과 처리]
+        ProcessResults --> StoreResults[해석 결과 저장]
+        StoreResults --> DS
+        ProcessResults --> V
+    end
+
+    %% Define Flow Arrows
+    C --> D
+    D --> F
+    F --> G
+    G --> ConvertGeo %% Assumes parsing success leads to conversion
+    ConvertGeo --> H
+    H --> RenderPreview
+    K --> L
+    L --> N
+    N --> GenMesh
+    GenMesh --> ConvertMesh %% Assumes meshing success leads to conversion
+    ConvertMesh --> O
+    O --> RenderMesh
+    R --> S
+    S --> U
+    U --> PrepareSolve
+    PrepareSolve --> RunSolve
+    RunSolve --> ProcessResults
+    ProcessResults --> V
+    V --> RenderResults
+
+    %% Styling (Optional, for better readability in some viewers)
+    style User fill:#f9f,stroke:#333,stroke-width:2px
+    style Frontend fill:#ccf,stroke:#333,stroke-width:2px
+    style Backend fill:#cfc,stroke:#333,stroke-width:2px
+    style DS fill:#ff9,stroke:#333,stroke-width:1px,stroke-dasharray: 5 5
+    style GK fill:#eef,stroke:#333,stroke-width:1px,stroke-dasharray: 5 5
+    style ME fill:#efe,stroke:#333,stroke-width:1px,stroke-dasharray: 5 5
+    style FS fill:#fee,stroke:#333,stroke-width:1px,stroke-dasharray: 5 5

@@ -2,7 +2,7 @@
     "name": "read-step-calc-aabb",
     "version": "1.0.0",
     "description": "STEP 파일 읽기 및 AABB 계산",
-    "main": "src/main.js",
+    "main": "src/index.js",
     "license": "MIT",
     "devDependencies": {
         "copy-webpack-plugin": "^9.0.0",

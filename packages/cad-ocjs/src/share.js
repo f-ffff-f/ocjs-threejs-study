@@ -1,25 +1,55 @@
-// AABB의 표면적 계산
-export function calculateAABBArea(aabb) {
-  const width = aabb.dimensions.x
-  const height = aabb.dimensions.y
-  const depth = aabb.dimensions.z
+import initOpenCascadeJs from 'opencascade.js'
 
-  // 직육면체의 표면적 = 2(너비×높이 + 너비×깊이 + 높이×깊이)
-  const surfaceArea = 2 * (width * height + width * depth + height * depth)
+// OpenCascade.js 초기화
+export const initOpenCascade = async () => {
+  try {
+    // 라이브러리가 로드되었는지 확인
+    if (typeof initOpenCascadeJs === 'undefined') {
+      throw new Error('OpenCascade.js 라이브러리를 찾을 수 없습니다.')
+    }
 
-  return surfaceArea
+    // 초기화 (로컬 파일 경로 지정)
+    const openCascade = await initOpenCascadeJs()
+
+    console.log('OpenCascade.js 초기화 완료')
+
+    // UI 업데이트
+    showTemplate('LOAD_SUCCESS')
+
+    return openCascade
+  } catch (error) {
+    console.error('OpenCascade.js 초기화 오류:', error)
+    showTemplate('LIB_ERROR', { message: error.message })
+    throw error
+  }
 }
 
-// AABB의 부피 계산
-export function calculateAABBVolume(aabb) {
-  return aabb.dimensions.x * aabb.dimensions.y * aabb.dimensions.z
+export const loadFileAsync = file => {
+  return new Promise((resolve, reject) => {
+    let reader = new FileReader()
+    reader.onload = () => resolve(reader.result)
+    reader.onerror = reject
+    reader.readAsText(file)
+  })
 }
 
-////////////////////////////////////////////////////////////
-const resultDiv = document.getElementById('result')
+export const getFileType = inputFile => {
+  switch (inputFile.name.toLowerCase().split('.').pop()) {
+    case 'step':
+    case 'stp':
+      return 'step'
+    case 'iges':
+    case 'igs':
+      return 'iges'
+    default:
+      return undefined
+  }
+}
 
 // 화면 표시 함수 - HTML 템플릿 통합 관리
 export function showTemplate(key, data = {}) {
+  const resultDiv = document.getElementById('result')
+
   switch (key) {
     case 'LOADING':
       resultDiv.innerHTML = `<div class="loading">STEP 파일 분석 중...</div>`

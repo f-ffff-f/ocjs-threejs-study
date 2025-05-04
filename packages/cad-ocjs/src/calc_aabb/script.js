@@ -13,11 +13,25 @@ import {
 } from '../share'
 
 initOpenCascade().then(openCascade => {
+  //  유저 업로드
   document
     .getElementById('step-file')
     .addEventListener('change', async event => {
       await loadSTEPorIGES(event.target.files[0], openCascade)
     })
+
+  // 테스트
+  const els = document.getElementsByClassName('test')
+  for (const el of els) {
+    el.addEventListener('click', async e => {
+      const filePath = e.target.name
+      const blob = await fetch(filePath).then(res => res.blob())
+      const fileObject = new File([blob], filePath, {
+        type: 'application/octet-stream',
+      })
+      await loadSTEPorIGES(fileObject, openCascade)
+    })
+  }
 })
 
 // STEP 파일은 B-rep 데이터를 저장하는 표준 형식.

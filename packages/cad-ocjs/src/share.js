@@ -89,24 +89,56 @@ export function showTemplate(key, data = {}) {
       break
 
     case 'RESULTS':
+      // 단위 이름(예: "MILLIMETRE")을 약어(예: "mm")로 변환하는 로직
+      let unitSymbol = '?' // 기본값 (단위를 모를 경우)
+      let lengthUnit = ''
+      if (
+        data.units &&
+        data.units.length &&
+        data.units.length !== '지정되지 않음' &&
+        data.units.length !== '오류 발생'
+      ) {
+        lengthUnit = data.units.length.toUpperCase() // 대문자로 통일하여 비교 용이하게
+
+        if (lengthUnit.includes('MILLIMETRE')) {
+          unitSymbol = 'mm'
+        } else if (lengthUnit.includes('INCH')) {
+          unitSymbol = 'in'
+        } else if (lengthUnit.includes('METRE')) {
+          // STEP 표준 철자는 'METRE'
+          unitSymbol = 'm'
+        } else if (lengthUnit.includes('CENTIMETRE')) {
+          unitSymbol = 'cm'
+        } else {
+          unitSymbol = data.units.length // 매핑 안되면 원본 이름 사용 (혹은 '?' 유지)
+        }
+      }
+
       resultDiv.innerHTML = `
-          <div class="success">STEP 파일을 성공적으로 처리했습니다!</div>
-          <h3>AABB 계산 결과</h3>
-          <p>치수: ${data.aabb.dimensions.x.toFixed(
-            2
-          )} × ${data.aabb.dimensions.y.toFixed(
+            <div class="success">STEP 파일을 성공적으로 처리했습니다!</div>
+            <h3>AABB 계산 결과</h3>
+            <p>측정된 길이 단위: ${
+              data.units && data.units.length ? data.units.length : '알 수 없음'
+            }</p>
+            <p>치수 (너비×높이×깊이): ${data.aabb.dimensions.x.toFixed(
+              2
+            )} × ${data.aabb.dimensions.y.toFixed(
         2
-      )} × ${data.aabb.dimensions.z.toFixed(2)}</p>
-          <p>표면적: ${data.area.toFixed(2)} 제곱 단위</p>
-          <p>부피: ${data.volume.toFixed(2)} 입방 단위</p>
-          <h4>좌표</h4>
-          <p>최소: (${data.aabb.min.x.toFixed(2)}, ${data.aabb.min.y.toFixed(
+      )} × ${data.aabb.dimensions.z.toFixed(2)} (${unitSymbol})</p>
+            <p>표면적: ${data.area.toFixed(2)} ${unitSymbol}²</p>
+            <p>부피: ${data.volume.toFixed(2)} ${unitSymbol}³</p>
+            <h4>좌표</h4>
+            <p>최소 (X, Y, Z): (${data.aabb.min.x.toFixed(
+              2
+            )}, ${data.aabb.min.y.toFixed(2)}, ${data.aabb.min.z.toFixed(
         2
-      )}, ${data.aabb.min.z.toFixed(2)})</p>
-          <p>최대: (${data.aabb.max.x.toFixed(2)}, ${data.aabb.max.y.toFixed(
+      )})</p>
+            <p>최대 (X, Y, Z): (${data.aabb.max.x.toFixed(
+              2
+            )}, ${data.aabb.max.y.toFixed(2)}, ${data.aabb.max.z.toFixed(
         2
-      )}, ${data.aabb.max.z.toFixed(2)})</p>
-        `
-      break
+      )})</p>
+          `
+      break // case 문 끝에 break 추가
   }
 }

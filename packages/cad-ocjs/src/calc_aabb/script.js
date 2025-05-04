@@ -68,6 +68,47 @@ async function loadSTEPorIGES(file, openCascade) {
     if (readResult === openCascade.IFSelect_ReturnStatus.IFSelect_RetDone) {
       console.log('STEP 파일 읽기 성공')
 
+      // ***** STEP 파일 단위 정보 확인 (OpenCascade.js 기반) ******
+      let lengthUnit = '지정되지 않음'
+      let angleUnit = '지정되지 않음'
+
+      try {
+        // 단위 정보를 저장할 시퀀스 객체 생성
+        const lengthUnits = new openCascade.TColStd_SequenceOfAsciiString_1()
+        const angleUnits = new openCascade.TColStd_SequenceOfAsciiString_1()
+        const solidAngleUnits =
+          new openCascade.TColStd_SequenceOfAsciiString_1()
+
+        stepReader.FileUnits(lengthUnits, angleUnits, solidAngleUnits)
+
+        // 길이 단위 정보 처리
+        if (lengthUnits.Length() > 0) {
+          lengthUnit = lengthUnits.Value(1).ToCString()
+          console.log(`파일에 정의된 길이 단위: ${lengthUnit}`)
+        } else {
+          console.warn('파일에서 길이 단위를 찾을 수 없습니다.')
+        }
+
+        // 각도 단위 정보 처리
+        if (angleUnits.Length() > 0) {
+          angleUnit = angleUnits.Value(1).ToCString()
+          console.log(`파일에 정의된 각도 단위: ${angleUnit}`)
+        } else {
+          console.warn('파일에서 각도 단위를 찾을 수 없습니다.')
+        }
+      } catch (unitError) {
+        console.error('단위 정보 추출 중 오류 발생:', unitError)
+        console.error('오류 상세 정보:', unitError.message)
+        // 오류 발생 시에도 기본값 유지
+        lengthUnit = '오류 발생'
+        angleUnit = '오류 발생'
+      }
+
+      // 결과 출력
+      console.log(`파일의 길이 단위: ${lengthUnit}`)
+      console.log(`파일의 각도 단위: ${angleUnit}`)
+      // ***** 단위 정보 확인 끝 ******
+
       // 루트 변환
       const progressRange = new openCascade.Message_ProgressRange_1()
       const numRootsTransferred = stepReader.TransferRoots(progressRange)
@@ -87,6 +128,10 @@ async function loadSTEPorIGES(file, openCascade) {
           aabb: aabb,
           area: calculateAABBArea(aabb),
           volume: calculateAABBVolume(aabb),
+          units: {
+            length: lengthUnit,
+            angle: angleUnit,
+          },
         }
 
         showTemplate('RESULTS', result)

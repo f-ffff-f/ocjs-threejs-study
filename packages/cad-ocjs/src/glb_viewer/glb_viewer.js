@@ -582,7 +582,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('load-model').addEventListener('click', async () => {
     try {
       // 공용 디렉토리에서 GLB 파일 로드
-      const model = await loadGLBModel(context, '/AntiqueCamera.glb')
+      const model = await loadGLBModel(context, 'AntiqueCamera.glb')
       focusCameraOnModel(context)
 
       // 부품 목록 업데이트
@@ -600,7 +600,7 @@ document.addEventListener('DOMContentLoaded', () => {
   })
 
   // 자동으로 모델 로드 (선택적)
-  loadGLBModel(context, '/AntiqueCamera.glb')
+  loadGLBModel(context, 'AntiqueCamera.glb')
     .then(() => {
       focusCameraOnModel(context)
 

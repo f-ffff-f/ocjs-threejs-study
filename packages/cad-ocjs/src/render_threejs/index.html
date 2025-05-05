@@ -17,6 +17,18 @@
     #viewport {
         flex-basis: 0;
         flex-grow: 1;
+        position: relative;
+        overflow: hidden;
+    }
+
+    #viewcube-container {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 100px;
+        height: 100px;
+        z-index: 10;
+        pointer-events: none;
     }
 </style>
 
@@ -27,6 +39,9 @@
     <button class="test" name="AssemblyExample-Assembly.step">test AssemblyExample-Assembly.step</button>
     <div id="result"></div>
     <div id="viewport">
+        <div id="viewcube-container"></div>
+    </div>
+
     </div>
 </body>
 

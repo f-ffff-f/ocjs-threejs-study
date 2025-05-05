@@ -9,7 +9,7 @@
         "start:react-app": "pnpm --filter ocjs-create-react-app start",
         "ocjs-node:start": ". \"$NVM_DIR/nvm.sh\" && cd packages/ocjs-node && nvm use && pnpm start",
         "start:examples": "pnpm --filter opencascade.js-examples start",
-        "start:read-step-calc-aabb": "pnpm --filter read-step-calc-aabb start"
+        "start:cad-ocjs": "pnpm --filter cad-ocjs start"
     },
     "devDependencies": {}
 }

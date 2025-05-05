@@ -9,4 +9,16 @@
     #viewport {
         flex-basis: 0;
         flex-grow: 1;
-    }</style><body><h1>cad 파일 Three.js 렌더링</h1><input id="step-file" name="step-file" type="file" accept=".iges,.step,.igs,.stp"/> <button class="test" name="cube.step">test cube.step</button> <button class="test" name="AssemblyExample-Assembly.step">test AssemblyExample-Assembly.step</button><div id="result"></div><div id="viewport"></div><script defer="defer" src="./js/462.af397469caf68c58925b.bundle.js"></script><script defer="defer" src="./js/525.0718257cc68befbaa690.bundle.js"></script><script defer="defer" src="./js/render_threejs.8a7081212a8652d3ee91.bundle.js"></script></body></html>
+        position: relative;
+        overflow: hidden;
+    }
+
+    #viewcube-container {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 100px;
+        height: 100px;
+        z-index: 10;
+        pointer-events: none;
+    }</style><body><h1>cad 파일 Three.js 렌더링</h1><input id="step-file" name="step-file" type="file" accept=".iges,.step,.igs,.stp"/> <button class="test" name="cube.step">test cube.step</button> <button class="test" name="AssemblyExample-Assembly.step">test AssemblyExample-Assembly.step</button><div id="result"></div><div id="viewport"><div id="viewcube-container"></div></div><script defer="defer" src="./js/462.af397469caf68c58925b.bundle.js"></script><script defer="defer" src="./js/525.8b0aff437583a1ef864a.bundle.js"></script><script defer="defer" src="./js/173.f394223691fa4e68bab0.bundle.js"></script><script defer="defer" src="./js/render_threejs.b3238c57f67d9c25b1ba.bundle.js"></script></body></html>

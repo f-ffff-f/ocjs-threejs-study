@@ -17,6 +17,7 @@ module.exports = (env, argv) => {
       main: './src/index.js', // 루트 페이지 (index.html) 용 JavaScript
       calc_aabb: './src/calc_aabb/script.js', // calc_aabb.html 용 JavaScript
       render_threejs: './src/render_threejs/script.js', // render_threejs.html 용 JavaScript
+      glb_viewer: './src/glb_viewer/glb_viewer.js', // glb_viewer.html 용 JavaScript
     },
 
     // 3. 출력 설정 (Output)
@@ -44,6 +45,7 @@ module.exports = (env, argv) => {
         rewrites: [
           { from: /^\/calc_aabb/, to: '/calc_aabb.html' },
           { from: /^\/render_threejs/, to: '/render_threejs.html' },
+          { from: /^\/glb_viewer/, to: '/glb_viewer.html' },
           // 필요한 다른 페이지 규칙 추가 가능
           { from: /./, to: '/index.html' }, // 다른 모든 경로는 index.html로 (SPA 동작 유사)
         ],
@@ -85,6 +87,13 @@ module.exports = (env, argv) => {
         template: path.join(__dirname, 'src', 'render_threejs', 'index.html'),
         filename: 'render_threejs.html',
         chunks: ['render_threejs'],
+        inject: 'body',
+      }),
+      // glb_viewer 페이지 (glb_viewer.html) 생성
+      new HtmlWebpackPlugin({
+        template: path.join(__dirname, 'src', 'glb_viewer', 'glb_viewer.html'),
+        filename: 'glb_viewer.html',
+        chunks: ['glb_viewer'],
         inject: 'body',
       }),
 

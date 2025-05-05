@@ -2,7 +2,7 @@ import * as THREE from 'three' // THREE 네임스페이스 사용
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import openCascadeHelper from './openCascadeHelper'
 import { loadFileAsync, getFileType } from '../share'
-import { updateViewCube } from './viewCube' // 뷰큐브 업데이트 함수 import
+import { updateViewCube } from '../viewCube' // 뷰큐브 업데이트 함수 import
 
 const loadSTEPorIGES = async (openCascade, inputFile, addFunction, scene) => {
   const fileType = getFileType(inputFile)

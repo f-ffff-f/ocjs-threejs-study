@@ -6,7 +6,7 @@ import {
   setupThreeJSViewport,
   addShapeToScene,
 } from './library'
-import { initViewCube } from './viewCube.js'
+import { initViewCube } from '../viewCube.js'
 
 // setupThreeJSViewport 호출 및 결과 저장
 const threeJsContext = setupThreeJSViewport()

@@ -8,22 +8,15 @@
 <style>
     body {
         margin: 0;
-        overflow: hidden;
         height: 100vh;
         display: flex;
         flex-direction: column;
-    }
-
-    #header {
-        padding: 10px;
-        background-color: #f5f5f5;
     }
 
     #viewport {
         flex-basis: 0;
         flex-grow: 1;
         position: relative;
-        overflow: hidden;
     }
 
     #viewcube-container {
@@ -38,20 +31,96 @@
 
     .controls {
         margin: 10px 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
     }
 
-    .controls button {
-        padding: 8px 12px;
-        margin-right: 10px;
-        background: #4285f4;
-        color: white;
-        border: none;
+    .info-section {
+        margin-top: 10px;
+        padding: 5px;
+        background-color: #fff;
         border-radius: 4px;
+    }
+
+    #parts-container {
+        display: flex;
+        margin-top: 15px;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    #parts-list-container {
+        background-color: #fff;
+        border-radius: 4px;
+        padding: 10px;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+
+    #parts-list {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    #parts-list li {
+        padding: 5px;
+        border-bottom: 1px solid #eee;
         cursor: pointer;
     }
 
-    .controls button:hover {
-        background: #3367d6;
+    #parts-list li:hover {
+        background-color: #f5f5f5;
+    }
+
+    #parts-list li.selected {
+        background-color: #e3f2fd;
+        font-weight: bold;
+        color: #0D47A1;
+    }
+
+    #instructions {
+        background-color: #fff;
+        border-radius: 4px;
+        padding: 10px;
+    }
+
+    .keyboard-tip {
+        font-style: italic;
+        color: #666;
+        margin-top: 10px;
+        font-size: 0.9em;
+    }
+
+    h1 {
+        margin-top: 0;
+        color: #333;
+    }
+
+    h3 {
+        margin-top: 0;
+        color: #444;
+    }
+
+    .kbd {
+        display: inline-block;
+        padding: 2px 4px;
+        font-size: 0.9em;
+        font-family: monospace;
+        background-color: #f7f7f7;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
+        margin: 0 2px;
+    }
+
+    .shortcuts-list {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 5px 10px;
+        align-items: center;
+        margin-top: 10px;
     }
 </style>
 
@@ -61,8 +130,41 @@
         <div class="controls">
             <button id="load-model">모델 로드</button>
             <button id="reset-view">뷰 초기화</button>
+            <button id="toggle-mode">모드: 카메라 이동</button>
         </div>
-        <div id="info"></div>
+        <div style="display: flex; flex-direction: row; justify-content: space-between;">
+            <div class="info-section">
+                <div id="info">모델 로드를 기다리는 중...</div>
+            </div>
+
+            <div id="parts-list-container">
+                <h3>부품 목록</h3>
+                <ul id="parts-list">
+                    <li>모델 로드 중...</li>
+                </ul>
+            </div>
+
+            <div id="instructions">
+                <h3>사용 방법</h3>
+                <div class="shortcuts-list">
+                    <span><span class="kbd">Shift</span></span>
+                    <span>일시적 모드 전환</span>
+
+                    <span><span class="kbd">F</span></span>
+                    <span>선택된 부품에 포커스</span>
+
+                    <span><span class="kbd">Esc</span></span>
+                    <span>선택 해제</span>
+                </div>
+                <div class="keyboard-tip">
+                    <p><strong>모드:</strong></p>
+                    <ul>
+                        <li><strong>카메라 이동 모드</strong>: 회전, 이동, 확대/축소</li>
+                        <li><strong>부품 선택 모드</strong>: 모델의 부품을 선택</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
     <div id="viewport">
         <div id="viewcube-container"></div>

@@ -18,6 +18,7 @@ module.exports = (env, argv) => {
       calc_aabb: './src/calc_aabb/script.js', // calc_aabb.html 용 JavaScript
       render_threejs: './src/render_threejs/script.js', // render_threejs.html 용 JavaScript
       glb_viewer: './src/glb_viewer/glb_viewer.js', // glb_viewer.html 용 JavaScript
+      study_occt: './src/studyOCCT/study_occt.js', // study_occt.html 용 JavaScript
     },
 
     // 3. 출력 설정 (Output)
@@ -46,6 +47,7 @@ module.exports = (env, argv) => {
           { from: /^\/calc_aabb/, to: '/calc_aabb.html' },
           { from: /^\/render_threejs/, to: '/render_threejs.html' },
           { from: /^\/glb_viewer/, to: '/glb_viewer.html' },
+          { from: /^\/study_occt/, to: '/study_occt.html' },
           // 필요한 다른 페이지 규칙 추가 가능
           { from: /./, to: '/index.html' }, // 다른 모든 경로는 index.html로 (SPA 동작 유사)
         ],
@@ -94,6 +96,14 @@ module.exports = (env, argv) => {
         template: path.join(__dirname, 'src', 'glb_viewer', 'glb_viewer.html'),
         filename: 'glb_viewer.html',
         chunks: ['glb_viewer'],
+        inject: 'body',
+      }),
+
+      // study_occt 페이지 (study_occt.html) 생성
+      new HtmlWebpackPlugin({
+        template: path.join(__dirname, 'src', 'studyOCCT', 'study_occt.html'),
+        filename: 'study_occt.html',
+        chunks: ['study_occt'],
         inject: 'body',
       }),
 

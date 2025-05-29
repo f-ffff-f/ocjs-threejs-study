@@ -11,5 +11,7 @@
         "start:examples": "pnpm --filter opencascade.js-examples start",
         "start:cad-ocjs": "pnpm --filter cad-ocjs start"
     },
-    "devDependencies": {}
+    "devDependencies": {
+        "@types/node": "^17.0.35"
+    }
 }

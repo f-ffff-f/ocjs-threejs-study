@@ -50,7 +50,7 @@ async function loadSTEPorIGES(file, openCascade) {
       // 파일이 존재하지 않으면 오류 무시
     }
 
-    // 자바스크립트가 파일을 변환한다
+    // 자바스크립트가 cad파일을 플레인 텍스트로 변환한다
     const fileText = await loadFileAsync(file)
     console.log(fileText)
 

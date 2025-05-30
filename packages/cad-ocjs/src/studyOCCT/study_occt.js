@@ -5,6 +5,7 @@ const openCascade = await initOpenCascadeJs()
 const result = document.getElementById('result')
 
 const myBoxShape = new openCascade.BRepPrimAPI_MakeBox_2(2, 2, 2).Shape()
+openCascade.DBrep
 
 const myBoxShapeTypeString = openCascade.TopAbs.ShapeTypeToString(
   myBoxShape.ShapeType()
@@ -84,4 +85,30 @@ openCascade.BRepGProp.SurfaceProperties_1(
 
 const surfaceArea = surfaceProperties.Mass()
 
-result.textContent = `topological shape: ${myBoxShapeTypeString} | geometry type of face: ${surfaceGeometryType} | number of faces: ${faceCount} | number of edges: ${edgeCount} | number of vertices: ${vertexCount} | mass: ${mass}  surfaceArea: ${surfaceArea}`
+const writer = new openCascade.STEPControl_Writer_1()
+const transferMode = openCascade.STEPControl_StepModelType.STEPControl_AsIs
+const progressRange = new openCascade.Message_ProgressRange_1()
+
+const transferSuccess = writer.Transfer(
+  myBoxShape,
+  transferMode,
+  true,
+  progressRange
+)
+
+if (transferSuccess !== openCascade.IFSelect_ReturnStatus.IFSelect_RetDone) {
+  // IFSelect_ReturnStatus 경로 확인 필요
+  console.error('STEP writer: Shape transfer failed.')
+}
+
+const fileName = 'myBoxShape.step'
+const writerStatus = writer.Write(fileName)
+
+if (writerStatus !== openCascade.IFSelect_ReturnStatus.IFSelect_RetDone) {
+  console.error('STEP writer: Shape write failed.')
+}
+
+const stepFileContentArray = openCascade.FS.readFile(fileName)
+const stepString = new TextDecoder().decode(stepFileContentArray)
+
+result.textContent = `topological shape: ${myBoxShapeTypeString} | geometry type of face: ${surfaceGeometryType} | number of faces: ${faceCount} | number of edges: ${edgeCount} | number of vertices: ${vertexCount} | mass: ${mass}  surfaceArea: ${surfaceArea} | step file: ${stepString}`

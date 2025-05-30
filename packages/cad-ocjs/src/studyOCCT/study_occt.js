@@ -4,11 +4,60 @@ const openCascade = await initOpenCascadeJs()
 
 const result = document.getElementById('result')
 
-// const pnt = new openCascade.gp_Pnt_3(1, 1, 1)
+const myBoxShape = new openCascade.BRepPrimAPI_MakeBox_2(2, 2, 2).Shape()
 
-// result.textContent = `${pnt.X()}, ${pnt.Y()}, ${pnt.Z()}`
+const myBoxShapeTypeString = openCascade.TopAbs.ShapeTypeToString(
+  myBoxShape.ShapeType()
+)
 
-const myBoxShape = new openCascade.BRepPrimAPI_MakeBox_2(1, 1, 1).Shape()
+const explorer = new openCascade.TopExp_Explorer_1()
+
+let faceCount = 0
+let surfaceGeometryType = ''
+for (
+  explorer.Init(
+    myBoxShape,
+    openCascade.TopAbs_ShapeEnum.TopAbs_FACE,
+    openCascade.TopAbs_ShapeEnum.TopAbs_SHAPE
+  );
+  explorer.More();
+  explorer.Next()
+) {
+  faceCount++
+
+  if (faceCount === 1) {
+    const aLoc = new openCascade.TopLoc_Location_1()
+    const face = openCascade.TopoDS.Face_1(explorer.Current())
+    const surfaceGeometry = openCascade.BRep_Tool.Surface_1(face, aLoc)
+    surfaceGeometryType = surfaceGeometry.get().DynamicType().get().Name()
+  }
+}
+
+let edgeCount = 0
+for (
+  explorer.Init(
+    myBoxShape,
+    openCascade.TopAbs_ShapeEnum.TopAbs_EDGE,
+    openCascade.TopAbs_ShapeEnum.TopAbs_SHAPE
+  );
+  explorer.More();
+  explorer.Next()
+) {
+  edgeCount++
+}
+
+let vertexCount = 0
+for (
+  explorer.Init(
+    myBoxShape,
+    openCascade.TopAbs_ShapeEnum.TopAbs_VERTEX,
+    openCascade.TopAbs_ShapeEnum.TopAbs_SHAPE
+  );
+  explorer.More();
+  explorer.Next()
+) {
+  vertexCount++
+}
 
 // Geomatry Properties 카테고리의 Geomatry Properties 객체 라는 뜻
 const volumeProperties = new openCascade.GProp_GProps_1()
@@ -22,7 +71,7 @@ openCascade.BRepGProp.VolumeProperties_1(
   false
 )
 
-const mass = `mass: ${volumeProperties.Mass()}`
+const mass = volumeProperties.Mass()
 
 const surfaceProperties = new openCascade.GProp_GProps_1()
 
@@ -33,6 +82,6 @@ openCascade.BRepGProp.SurfaceProperties_1(
   false
 )
 
-const surfaceArea = `surfaceArea: ${surfaceProperties.Mass()}`
+const surfaceArea = surfaceProperties.Mass()
 
-result.textContent = `${mass} ${surfaceArea}`
+result.textContent = `topological shape: ${myBoxShapeTypeString} | geometry type of face: ${surfaceGeometryType} | number of faces: ${faceCount} | number of edges: ${edgeCount} | number of vertices: ${vertexCount} | mass: ${mass}  surfaceArea: ${surfaceArea}`
